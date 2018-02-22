@@ -10,6 +10,7 @@
 #define IP_LOOPBACK "127.0.0.1"
 #define IP_MYSELF "0.0.0.0"
 #define MAX_CONN 50
+#define MAX_MSG 4096
 
 class SocketTCP{
 protected:int sock_id;
@@ -24,7 +25,7 @@ SocketTCP::SocketTCP(){
 }
 SocketTCP::~SocketTCP(){
           int ret = close(sock_id);
-          if(close()==-1)
+          if(ret==-1)
                     errore(-2,"close()\n");
 }
 bool SocketTCP::broadcast(bool broadcast){
