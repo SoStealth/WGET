@@ -153,6 +153,13 @@ bool ClientTCP::invia(char* msg){
 char* ClientTCP::ricevi(){
           return connessione->ricevi();
 }
+bool ClientTCP::invia_raw(void* buffer, int length) {
+	  return connessione->invia_raw(msg);
+}
+bool ClientTCP::ricevi_raw(int* length) {
+	  return connessione->ricevi_raw(length);
+}
+
 
 
 
