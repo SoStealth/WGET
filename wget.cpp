@@ -4,15 +4,14 @@ USAGE: wget_client IP filename
 Simple client program who asks a server for a file via TCP socket connection
 */
 #include "TCPv2.hpp"
+#include "stringhe.hpp"
 #include <string.h>
 
 #define PORT 80
 #define REQUEST_HEADER "GET /"
 #define REQUEST_FOOTER " HTTP/1.1"
 #define RETURN_CODE_OK "200 OK"
-#define ENDLINE "\n"
-
-using namespace std;
+#define ENDLINE "\n\n"
 
 int main(int argc, char* argv[]) {
     char* ip;
@@ -21,9 +20,9 @@ int main(int argc, char* argv[]) {
     ClientTCP myself();
   
     if(argc!=3) {
-        printf("USAGE:%s IP FILENAME\n",argv[0]);
-		return -1;
-    }
+       	printf("USAGE:%s IP FILENAME\n",argv[0]);
+	return -1;
+	}
   	
 	ip = argv[1];
 	Address server(ip,PORT);
@@ -44,7 +43,10 @@ int main(int argc, char* argv[]) {
 	
 	char* content = strstr(response,ENDLINE);
 	FILE* file = fopen(filename,"w");
-	
-  
+	int results = fputs(content, file);
+	if (results == EOF) {
+    	errore(-4,"fputs()\n");
+	}
+  	
     return 0;
 }
