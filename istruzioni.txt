@@ -1,0 +1,10 @@
+Client che riceve IP del server e nome file
+Invia richiesta al server sulla porta 80 (porta http)
+	richiesta GET con il nome del file che vogliamo ricevere e user agent a casissimo
+
+Server risponde con pacchetti
+
+Client controlla con strstr se c'è "200 OK" e cerca il carattere a capo (riga vuota), quello che segue è il file interessato
+Salva il file su disco
+
+OPZIONALE: fork su browser per visualizzare il file
