@@ -24,7 +24,7 @@ SocketTCP::SocketTCP(){
 }
 SocketTCP::~SocketTCP(){
           int ret = close(sock_id);
-          if(close==-1)
+          if(close()==-1)
                     errore(-2,"close()\n");
 }
 bool SocketTCP::broadcast(bool broadcast){
@@ -48,8 +48,8 @@ public:   Connection(int conn_id, bool fuffa);
           char* ricevi_raw(int* length); /* API: recv() */
 };
 Connection::Connection(int conn_id, bool fuffa){
-          this.fuffa = fuffa;
-          this.conn_id = conn_id;
+          this->fuffa = fuffa;
+          this->conn_id = conn_id;
 }
 bool Connection::invia(char* msg){
 	return invia_raw(msg,strlen(msg)+1);
@@ -76,7 +76,7 @@ void* duplica(char* buffer, int* length){
 		*(ret+i)=*(buffer+i);
 	return ret;
 }
-bool Connection::ricevi_raw(int* length){
+char* Connection::ricevi_raw(int* length){
 	char buffer[MAX_MSG+1];
 	*length = recv(	conn_id,
 			buffer,
@@ -86,21 +86,21 @@ bool Connection::ricevi_raw(int* length){
 }
 //-------------------------------------------------------------------------------------
 class ServerTCP: public SocketTCP{
-private:  std::list<Connessione> connessioni;
+private:  std::list<Connection> connessioni;
 public:   ServerTCP(int port, bool loopback); /* API: bind(),listen() */
           ~ServerTCP(); /* API: close() */
           Connection* accetta(); /* API: accept() */
           void invia_a_tutti(char* msg);
           void disconnetti(Connection connessione);
 };
-ServerTCP::ServerTCP(int port, bool loopback): SocketTCP{
-          Address myself(IP_MYSELF,port);
-	sock_id = socket(AF_INET, SOCK_STREAM, 0);
-	bind(	sock_id,
-		(struct sockaddr) myself.get_address(),
-		(socklen_t) sizeof(struct sockaddr));
-	listen(sock_id,1);
-	conn_id = -1;
+ServerTCP::ServerTCP(int port, bool loopback) {
+		Address myself(IP_MYSELF,port);
+		sock_id = socket(AF_INET, SOCK_STREAM, 0);
+		bind(	sock_id,
+			(struct sockaddr) myself.get_address(),
+			(socklen_t) sizeof(struct sockaddr));
+		listen(sock_id,1);
+		conn_id = -1;
 }
 ServerTCP::~ServerTCP(){
           connessioni.clear();
