@@ -98,16 +98,17 @@ ServerTCP::ServerTCP(int port, bool loopback) {
 		Address myself(IP_MYSELF,port);
 		sock_id = socket(AF_INET, SOCK_STREAM, 0);
 		bind(	sock_id,
-			(struct sockaddr) myself.get_address(),
+			(struct sockaddr)myself.get_address(),
 			(socklen_t) sizeof(struct sockaddr));
 		listen(sock_id,1);
-		conn_id = -1;
 }
 ServerTCP::~ServerTCP(){
           connessioni.clear();
 }
 Connection* ServerTCP::accetta() {
           Connection* ret;
+	  struct sockaddr_in client;
+	  int length;
           int conn_id;
           conn_id = accept(sock_id,(struct sockaddr*)&client,(socklen_t*)&length);
           ret = new Connection(conn_id,false);
@@ -134,7 +135,7 @@ public:   ClientTCP(); /* API: socket() */
 };
 bool ClientTCP::connetti(Address server){
           struct sockaddr_in server_addr;
-          server_addr = server->get_address();
+          server_addr = server.get_address();
           
           int ret = connect(sock_id,
                                 (struct sockaddr*) &server_addr,
@@ -142,7 +143,7 @@ bool ClientTCP::connetti(Address server){
           if(ret) return true;
     
           /*si può passare sock_id perché sul client ha la stessa funzione di conn_id */
-          connessione = new Connessione(sock_id);
+          connessione = new Connection(sock_id);
           
           return false;
 }
@@ -157,7 +158,7 @@ char* ClientTCP::ricevi(){
 bool ClientTCP::invia_raw(void* buffer, int length) {
 	  return connessione->invia_raw(buffer, length);
 }
-bool ClientTCP::ricevi_raw(int* length) {
+char* ClientTCP::ricevi_raw(int* length) {
 	  return connessione->ricevi_raw(length);
 }
 
